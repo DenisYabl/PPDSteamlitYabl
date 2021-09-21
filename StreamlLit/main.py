@@ -309,6 +309,7 @@ elif option == firstOp.iloc[4]:
     option1 = st.sidebar.selectbox(
         'Выбор КНС',
         [1, 2])
+    st.write('Комментарий: чем чернее, тем старее и чем краснее, тем новее.')
     if st.sidebar.button('Отобразить'):
         query1 = '| readFile format=parquet path=FS/PPD/kns' + str(option1) + '_long '
         query1 += '| fields _time, Description, value, EU'
