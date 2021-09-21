@@ -4,6 +4,7 @@ import re
 from datetime import datetime, date, timedelta
 import matplotlib.pyplot as plt
 from scipy import interpolate
+import numpy.linalg as ln
 from ot_simple_connector.connector import Connector
 
 def mySlice(df, d, metric):
@@ -65,7 +66,7 @@ def NRH(df, pump_no):
     Q.rename(columns={'value': 'Q'}, inplace=True)
     PQ = pd.merge(Q, P, on='T')
     PQ = PQ[PQ['Q'] > 0.0]
-    PQ.sort_values(by='T')
+    PQ.sort_values(by='T', inplace=True)
 
     return PQ
 
@@ -105,3 +106,17 @@ def myPlot(df1, df2, KNS_no, pump_no, mode=1):
         plt.grid(True)
 
     return fig
+
+
+def SqReg(x, y):
+    # x and y should be "np.array"
+    A = [(x**4).sum(), (x**3).sum(), (x**2).sum(),
+         (x**3).sum(), (x**2).sum(), x.sum(),
+         (x**2).sum(), x.sum(), x.size]
+    A = np.array(A).reshape(3, 3)
+
+    b = [(y * x**2).sum(), (y * x).sum(), y.sum()]
+    b = np.array(b).reshape(3, 1)
+
+    # return ln.inv(A.T.dot(A)).dot(A.T).dot(b)
+    return ln.inv(A).dot(b)
